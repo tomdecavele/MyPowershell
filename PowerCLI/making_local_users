@@ -1,0 +1,19 @@
+#!/bin/bash
+min=1
+max=14
+Group="winos"
+NewPassword="P@ssw0rd"
+
+for (( c=min; c<=max; c++ ))
+do  
+   if [ $c -le 9 ] ; then
+     NewUser="team0$c"
+   else
+     NewUser="team$c"
+   fi
+   
+   echo $NewUser
+   useradd $NewUser
+   usermod -A $Group $NewUser
+   echo "$NewUser:$NewPassword" | chpasswd
+done
