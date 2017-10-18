@@ -3,13 +3,21 @@
 #
 Resolve-DnsName -Name tdc3.local -Type A
 #
+# show DNS cache in Powershell (ipconfig /displaydns)
+#
+Get-DnsClientCache
+#
+# clear DNS cache in Powershell (ipconfig /flushdns)
+#
+Clear-DnsClientCache
+#
 # Adding a primary reverse lookup zone in the domain
 #
 Add-DnsServerPrimaryZone -NetworkID "192.168.2.0/24" -ReplicationScope Domain
 #
-# Force DC to register itself in the newly created reverse lookup zone
+# Force DC to register itself in the newly created reverse lookup zone (ipconfig /registerdns)
 #
-ipconfig /registerdns
+Register-DnsClient
 #
 # Manually adding the PTR resource record for your DC 
 #
