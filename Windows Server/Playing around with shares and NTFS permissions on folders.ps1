@@ -8,19 +8,30 @@
 # - share perms : everyone - full control
 # - NTFS perms : Administrators - full control and Authenticated Users - ReadAndExecute on this folder only 
 #
-New-Item -Path \\team10-ms\C$\Homedirs -type directory -Force
-New-SmbShare -CimSession team10-ms –Name Homedirs –Path c:\Homedirs -FullAccess Everyone
+$FileServer="team10-ms"
+$Share="C$"
+$Drive="C:"
+$Dir="Homedirs"
+$LocalPath=$Drive+"\"+$Dir
+$Path="\\"+$FileServer+"\"+$Share+"\"+$Dir
 
-$acl = Get-Acl \\team10-ms\c$\Homedirs
+New-Item -Path $Path -type directory -Force
+New-SmbShare -CimSession $FileServer –Name $Dir –Path $LocalPath -FullAccess Everyone
+
+$acl = Get-Acl $Path
 $acl.SetAccessRuleProtection($True, $False)
-
+#
+# SetAccessRuleProtection (isProtected As Boolean,preserveInheritance As Boolean)
+# - isProtected: true to protect the access rules from inheritance (=disable inheritance).
+# - preserveInheritanceType: false to remove inherited access rules. This parameter is ignored if isProtected is false.
+#
 $rule = New-Object System.Security.AccessControl.FileSystemAccessRule("Administrators","FullControl", "ContainerInherit, ObjectInherit", "None", "Allow")
 $acl.AddAccessRule($rule)
 
 $rule = New-Object System.Security.AccessControl.FileSystemAccessRule("Authenticated Users","ReadAndExecute", "None", "NoPropagateInherit", "Allow")
 $acl.AddAccessRule($rule)
 
-Set-Acl \\team10-ms\c$\Homedirs $acl
+Set-Acl $Path $acl
 
 #
 # making a share remotely
@@ -28,10 +39,17 @@ Set-Acl \\team10-ms\c$\Homedirs $acl
 # - share perms : everyone - full control
 # - NTFS perms : Administrators - full control and Authenticated Users - Modify
 #
-New-Item -Path \\team10-ms\C$\Profiles -type directory -Force 
-New-SmbShare -CimSession team10-ms –Name Profiles –Path c:\Profiles -FullAccess Everyone
+$FileServer="team10-ms"
+$Share="C$"
+$Drive="C:"
+$Dir="Profiles"
+$LocalPath=$Drive+"\"+$Dir
+$Path="\\"+$FileServer+"\"+$Share+"\"+$Dir
 
-$acl = Get-Acl \\team10-ms\c$\Profiles
+New-Item -Path $Path -type directory -Force 
+New-SmbShare -CimSession $FileServer –Name $Dir –Path $LocalPath -FullAccess Everyone
+
+$acl = Get-Acl $Path
 $acl.SetAccessRuleProtection($True, $False)
 
 $rule = New-Object System.Security.AccessControl.FileSystemAccessRule("Administrators","FullControl", "ContainerInherit, ObjectInherit", "None", "Allow")
@@ -40,7 +58,7 @@ $acl.AddAccessRule($rule)
 $rule = New-Object System.Security.AccessControl.FileSystemAccessRule("Authenticated Users","Modify", "ContainerInherit, ObjectInherit", "None", "Allow")
 $acl.AddAccessRule($rule)
 
-Set-Acl \\team10-ms\c$\Profiles $acl
+Set-Acl $Path $acl
 
 #
 # making a share remotely
@@ -48,16 +66,23 @@ Set-Acl \\team10-ms\c$\Profiles $acl
 # - share perms : everyone - full control
 # - NTFS perms : Administrators - full control and Authenticated Users - ReadAndExecute
 #
-New-Item -Path \\team10-ms\C$\Public -type directory -Force 
-New-SmbShare -CimSession team10-ms –Name Public –Path c:\Public -FullAccess Everyone
+$FileServer="team10-ms"
+$Share="C$"
+$Drive="C:"
+$Dir="Public"
+$LocalPath=$Drive+"\"+$Dir
+$Path="\\"+$FileServer+"\"+$Share+"\"+$Dir
 
-$acl = Get-Acl \\team10-ms\c$\Public
+New-Item -Path $Path -type directory -Force 
+New-SmbShare -CimSession $FileServer –Name $Dir –Path $LocalPath -FullAccess Everyone
+
+$acl = Get-Acl $Path
 $acl.SetAccessRuleProtection($True, $False)
 
 $rule = New-Object System.Security.AccessControl.FileSystemAccessRule("Administrators","FullControl", "ContainerInherit, ObjectInherit", "None", "Allow")
 $acl.AddAccessRule($rule)
 
-$rule = New-Object System.Security.AccessControl.FileSystemAccessRule("Authenticated Users","ReadandExecute", "ContainerInherit, ObjectInherit", "None", "Allow")
+$rule = New-Object System.Security.AccessControl.FileSystemAccessRule("Authenticated Users","Modify", "ContainerInherit, ObjectInherit", "None", "Allow")
 $acl.AddAccessRule($rule)
 
-Set-Acl \\team10-ms\c$\Public $acl
+Set-Acl $Path $acl
